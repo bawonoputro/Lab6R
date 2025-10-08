@@ -15,7 +15,7 @@
 #' @export
 
 greedy_knapsack <- function(x, W){
-  stofinot(is.data.frame(x),
+  stopifnot(is.data.frame(x),
            all(c("v", "w") %in% names(x)),
            is.numeric(x$v), is.numeric(x$w),
            all(is.finite(x$v)), all(is.finite(x$w)),
@@ -23,7 +23,11 @@ greedy_knapsack <- function(x, W){
            length(W) == 1, is.numeric(W), is.finite(W), W > 0
   )
 
+v <- x$v
+w <- x$w
+
 n <- length(v)
+
 
 ratio <- v / w
 
@@ -43,6 +47,6 @@ for (i in items) {
 }
 
 
-list(value = total_value, items = selected_items)
+list(value = total_value, elements = selected_items)
 
 }
