@@ -1,0 +1,72 @@
+---
+title: "Lab Report: Knapsack Problem"
+author: "Paripurna Bawonoputro"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Lab Report: Knapsack Problem}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+# Introduction
+
+This vignette shows three different approaches to solving the **Knapsack Problem**, a classic optimization problem. The objective is to select a subset of items that maximize the total value without exceeding the capacity of a knapsack. We also used parallelization of the brute force method.
+
+The four approaches we will cover are:
+
+1. **Brute Force Method**
+2. **Parallel Brute Force**
+3. **Dynamic Programming**
+4. **Greedy Algorithm**
+
+### Sourcing Function Scripts
+
+Before we begin, we need to load the functions from the existing scripts. Let's source the function scripts that you have already created.
+
+```{r}
+# Source the function scripts
+source("..//R//brute_force_knapsack.R")
+source("..//R//parallel_brute_force_knapsack.R")
+source("..//R//knapsack_dynamic.R")
+source("..//R//greedy_knapsack.R")
+
+# Suppress warnings and set the RNG seed for reproducibility
+suppressWarnings(RNGversion(min(as.character(getRversion()),"3.5.3")))
+set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
+
+# Test Data
+n <- 2000
+knapsack_objects <- data.frame(
+  w = sample(1:4000, size = n, replace = TRUE),
+  v = runif(n = n, 0, 10000)
+)
+```
+# Solve the knapsack problem using brute force
+```{r}
+start_time <- Sys.time()
+result <- brute_force_knapsack(x = knapsack_objects[1:20,], W = 3500)
+end_time <- Sys.time()
+execution_time_brute_force <- end_time - start_time
+
+result
+execution_time_brute_force
+```
+# Solve the knapsack problem using parallel brute force
+```{r}
+start_time_parallel <- Sys.time()
+result_parallel <- parallel_brute_force_knapsack(x = knapsack_objects[1:20,], W = 3500)
+end_time_parallel <- Sys.time()
+execution_time_parallel <- end_time_parallel - start_time_parallel
+
+result_parallel
+execution_time_parallel
+```
+# Solve the knapsack problem using dynamic programming
+```{r}
+result_dynamic <- knapsack_dynamic(x = knapsack_objects[1:10,], W = 3500)
+result_dynamic
+```
+# Solve the knapsack problem using the greedy algorithm
+```{r}
+result_greedy <- greedy_knapsack(x = knapsack_objects[1:10,], W = 3500)
+result_greedy
+```

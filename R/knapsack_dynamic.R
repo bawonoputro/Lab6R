@@ -19,14 +19,14 @@
 #' @export
 
 knapsack_dynamic <- function(x, W){
-  stofinot(is.data.frame(x),
+  stopifnot(is.data.frame(x),
            all(c("v", "w") %in% names(x)),
            is.numeric(x$v), is.numeric(x$w),
            all(is.finite(x$v)), all(is.finite(x$w)),
            all(x$v > 0), all(x$w > 0),
            length(W) == 1, is.numeric(W), is.finite(W), W > 0
            )
-  n <- row(x)
+  n <- nrow(x)
   if (n == 0L) return(list(value = 0, elements = integer()))
 
   v <- as.numeric(x$v)

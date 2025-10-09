@@ -1,6 +1,7 @@
 #' Brute-force Knapsack
 #'
-#' Solves the Knapsack problem using a brute-force approach by evaluating all possible combinations of items.
+#' Solves the Knapsack problem using a parallel brute-force approach by evaluating all
+#' possible combinations of items using more than one core simultaneously.
 #'
 #' @param x A data frame with two columns:
 #'   - `v`: A numeric vector representing the values of the items.
@@ -12,8 +13,8 @@
 #'   - `elements`: A vector of the selected items that give the maximum value.
 #' @export
 
-
-brute_force_knapsack <- function(x,W){
+library(parallel)
+parallel_brute_force_knapsack <- function(x,W){
   stopifnot(is.data.frame(x),
             all(c("v","w") %in% names(x)),
             is.numeric(x$v), is.numeric(x$w),
@@ -27,7 +28,7 @@ brute_force_knapsack <- function(x,W){
     stop("n should be a single number.")
   }
 
-  if (n == 0L) return(list(value = 0, elements = integer()))
+  if (n == 0) return(list(value = 0, elements = integer()))
 
   v <- as.numeric(x$v)
   w <- as.numeric(x$w)
@@ -35,20 +36,43 @@ brute_force_knapsack <- function(x,W){
   best_value <- 0
   best_idx   <- integer()
 
-  last <- as.integer(2^n - 1L)
-  for (i in 0:last) {
+  last <- as.integer(2^n - 1)
+
+  num_cores <- detectCores() - 1
+  chunk_size <- floor((last + 1) / num_cores)
+
+  subset_range_list <- split(0:last, ceiling(seq_along(0:last) / chunk_size))
+
+  evaluate_subset_chunk <- function(subset_range) {
+    local_best_value <- 0
+    local_best_idx <- integer()
+
+  for (i in subset_range) {
     bits <- intToBits(i)[seq_len(n)]
-    selected  <- which(as.integer(bits) == 1L)
+    selected  <- which(as.integer(bits) == 1)
 
     total_w <- if (length(selected)) sum(w[selected]) else 0
     if (total_w <= W) {
       total_value <- if (length(selected)) sum(v[selected]) else 0
-      if (total_value > best_value) {
-        best_value <- total_value
-        best_idx   <- selected
+      if (total_value > local_best_value) {
+        local_best_value <- total_value
+        local_best_idx   <- selected
       }
+    }
+  }
+
+  list(value = as.numeric(local_best_value), elements = as.integer(local_best_idx))
+
+  }
+  result_list <- mclapply(subset_range_list, evaluate_subset_chunk, mc.cores = num_cores)
+
+  for (result in result_list) {
+    if (result$value > best_value) {
+      best_value <- result$value
+      best_idx <- result$elements
     }
   }
 
   list(value = as.numeric(best_value), elements = as.integer(best_idx))
 }
+

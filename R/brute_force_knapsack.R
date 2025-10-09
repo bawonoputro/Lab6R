@@ -12,7 +12,7 @@
 #'   - `elements`: A vector of the selected items that give the maximum value.
 #' @export
 
-
+library(parallel)
 brute_force_knapsack <- function(x,W){
   stopifnot(is.data.frame(x),
             all(c("v","w") %in% names(x)),
@@ -27,7 +27,7 @@ brute_force_knapsack <- function(x,W){
     stop("n should be a single number.")
   }
 
-  if (n == 0L) return(list(value = 0, elements = integer()))
+  if (n == 0) return(list(value = 0, elements = integer()))
 
   v <- as.numeric(x$v)
   w <- as.numeric(x$w)
@@ -35,10 +35,12 @@ brute_force_knapsack <- function(x,W){
   best_value <- 0
   best_idx   <- integer()
 
-  last <- as.integer(2^n - 1L)
+  last <- as.integer(2^n - 1)
+  if (is.na(last) || last == 0) stop("Error: Invalid last value in brute_force_knapsack.")
+
   for (i in 0:last) {
     bits <- intToBits(i)[seq_len(n)]
-    selected  <- which(as.integer(bits) == 1L)
+    selected  <- which(as.integer(bits) == 1)
 
     total_w <- if (length(selected)) sum(w[selected]) else 0
     if (total_w <= W) {
@@ -52,3 +54,4 @@ brute_force_knapsack <- function(x,W){
 
   list(value = as.numeric(best_value), elements = as.integer(best_idx))
 }
+
