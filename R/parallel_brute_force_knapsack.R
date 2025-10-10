@@ -12,72 +12,65 @@
 #'   - `value`: Maximum total value achievable.
 #'   - `elements`: A vector of the selected items that give the maximum value.
 #' @export
-parallel_brute_force_knapsack <- function(x,W){
+#'
+parallel_brute_force_knapsack <- function(x, W){
   stopifnot(is.data.frame(x),
             all(c("v","w") %in% names(x)),
             is.numeric(x$v), is.numeric(x$w),
             all(is.finite(x$v)), all(is.finite(x$w)),
             all(x$v > 0), all(x$w > 0),
-            length(W) == 1, is.numeric(W), is.finite(W), W > 0
-            )
+            length(W) == 1, is.numeric(W), is.finite(W), W > 0)
+
   n <- nrow(x)
-
-  if (length(n) != 1) {
-    stop("n should be a single number.")
-  }
-
+  if (length(n) != 1) stop("n should be a single number.")
   if (n == 0) return(list(value = 0, elements = integer()))
 
   v <- as.numeric(x$v)
   w <- as.numeric(x$w)
-
   best_value <- 0
-  best_idx   <- integer()
-
+  best_idx <- integer()
   last <- as.integer(2^n - 1)
 
   num_cores <- parallel::detectCores() - 1
   chunk_size <- floor((last + 1) / num_cores)
 
-  subset_range_list <- split(0:last, ceiling(seq_along(0:last) / chunk_size))
+  subset_range_list <- split(0:last, ceiling(seq_along(0:last)/chunk_size))
 
   evaluate_subset_chunk <- function(subset_range) {
     local_best_value <- 0
     local_best_idx <- integer()
-
-  for (i in subset_range) {
-    bits <- intToBits(i)[seq_len(n)]
-    selected  <- which(as.integer(bits) == 1)
-
-    total_w <- if (length(selected)) sum(w[selected]) else 0
-    if (total_w <= W) {
-      total_value <- if (length(selected)) sum(v[selected]) else 0
-      if (total_value > local_best_value) {
-        local_best_value <- total_value
-        local_best_idx   <- selected
+    for (i in subset_range) {
+      bits <- intToBits(i)[seq_len(n)]
+      selected <- which(as.integer(bits) == 1)
+      total_w <- if (length(selected)) sum(w[selected]) else 0
+      if (total_w <= W) {
+        total_value <- if (length(selected)) sum(v[selected]) else 0
+        if (total_value > local_best_value) {
+          local_best_value <- total_value
+          local_best_idx <- selected
+        }
       }
     }
+    list(value = local_best_value, elements = as.integer(local_best_idx))
   }
 
-  list(value = as.numeric(local_best_value), elements = as.integer(local_best_idx))
 
-  }
+  use_parallel <- interactive() && num_cores > 1
+
 
   if (use_parallel) {
-    # On *nix/mac this will use mclapply
-    result_list <- parallel::mclapply(chunks, evaluate_chunk, mc.cores = num_cores)
+    result_list <- parallel::mclapply(subset_range_list, evaluate_subset_chunk, mc.cores = num_cores)
   } else {
-    # fallback sequentially: safe for CI / Windows / non-interactive builds
-    result_list <- lapply(chunks, evaluate_chunk)
+    result_list <- lapply(subset_range_list, evaluate_subset_chunk)
   }
 
-  for (result in result_list) {
-    if (result$value > best_value) {
-      best_value <- result$value
-      best_idx <- result$elements
+
+  for (res in result_list) {
+    if (res$value > best_value) {
+      best_value <- res$value
+      best_idx <- res$elements
     }
   }
 
-  list(value = as.numeric(best_value), elements = as.integer(best_idx))
+  list(value = best_value, elements = sort(as.integer(best_idx)))
 }
-
