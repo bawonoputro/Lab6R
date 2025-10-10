@@ -1,4 +1,4 @@
-#' Brute-force Knapsack
+#' Parallel Brute-force Knapsack
 #'
 #' Solves the Knapsack problem using a parallel brute-force approach by evaluating all
 #' possible combinations of items using more than one core simultaneously.
@@ -38,7 +38,7 @@ parallel_brute_force_knapsack <- function(x,W){
 
   last <- as.integer(2^n - 1)
 
-  num_cores <- detectCores() - 1
+  num_cores <- parallel::detectCores() - 1
   chunk_size <- floor((last + 1) / num_cores)
 
   subset_range_list <- split(0:last, ceiling(seq_along(0:last) / chunk_size))
@@ -64,7 +64,7 @@ parallel_brute_force_knapsack <- function(x,W){
   list(value = as.numeric(local_best_value), elements = as.integer(local_best_idx))
 
   }
-  result_list <- mclapply(subset_range_list, evaluate_subset_chunk, mc.cores = num_cores)
+  result_list <- parallel::mclapply(subset_range_list, evaluate_subset_chunk, mc.cores = num_cores)
 
   for (result in result_list) {
     if (result$value > best_value) {
