@@ -12,8 +12,6 @@
 #'   - `value`: Maximum total value achievable.
 #'   - `elements`: A vector of the selected items that give the maximum value.
 #' @export
-
-library(parallel)
 parallel_brute_force_knapsack <- function(x,W){
   stopifnot(is.data.frame(x),
             all(c("v","w") %in% names(x)),

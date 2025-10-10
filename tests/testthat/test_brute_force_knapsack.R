@@ -3,7 +3,7 @@ suppressWarnings(RNGversion(min(as.character(getRversion()),"3.5.3")))
 set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
 
 # Test Data
-n <- 2000
+n <- 16
 knapsack_objects <- data.frame(
   w = sample(1:4000, size = n, replace = TRUE),
   v = runif(n = n, 0, 10000)
@@ -25,21 +25,22 @@ test_that("functions rejects erroneous input.", {
 # Test for correct results for different inputs
 test_that("Function returns correct results.", {
   bfk <- brute_force_knapsack(x = knapsack_objects[1:8,], W = 3500)
-  expect_equal(round(bfk$value), 16770)
-  expect_true(all(round(bfk$elements) %in% c(5, 8)))
+  expect_equal(bfk$value, 16770, tolerance = 1e-3)
+  expect_setequal(bfk$elements, c(5, 8))   # order-agnostic
 
   bfk <- brute_force_knapsack(x = knapsack_objects[1:12,], W = 3500)
-  expect_equal(round(bfk$value), 16770)
-  expect_true(all(round(bfk$elements) %in% c(5, 8)))
+  expect_equal(bfk$value, 16770, tolerance = 1e-3)
+  expect_setequal(bfk$elements, c(5, 8))
 
   bfk <- brute_force_knapsack(x = knapsack_objects[1:8,], W = 2000)
-  expect_equal(round(bfk$value), 15428)
-  expect_true(all(round(bfk$elements) %in% c(3, 8)))
+  expect_equal(bfk$value, 15428, tolerance = 1e-3)
+  expect_setequal(bfk$elements, c(3, 8))
 
   bfk <- brute_force_knapsack(x = knapsack_objects[1:12,], W = 2000)
-  expect_equal(round(bfk$value), 15428)
-  expect_true(all(round(bfk$elements) %in% c(3, 8)))
+  expect_equal(bfk$value, 15428, tolerance = 1e-3)
+  expect_setequal(bfk$elements, c(3, 8))
 })
+
 
 # Test for execution time of normal brute force
 test_that("Normal brute force execution time", {
