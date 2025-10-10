@@ -52,13 +52,17 @@ execution_time_brute_force
 ```
 # Solve the knapsack problem using parallel brute force
 ```{r}
-start_time_parallel <- Sys.time()
-result_parallel <- parallel_brute_force_knapsack(x = knapsack_objects[1:20,], W = 3500)
-end_time_parallel <- Sys.time()
-execution_time_parallel <- end_time_parallel - start_time_parallel
+if(interactive()) {
+  start_time_parallel <- Sys.time()
+  result_parallel <- parallel_brute_force_knapsack(x = knapsack_objects[1:20,], W = 3500)
+  end_time_parallel <- Sys.time()
+  execution_time_parallel <- end_time_parallel - start_time_parallel
 
-result_parallel
-execution_time_parallel
+  result_parallel
+  execution_time_parallel
+} else {
+  message("Parallel brute force skipped: non-interactive session.")
+}
 ```
 # Solve the knapsack problem using dynamic programming
 ```{r}

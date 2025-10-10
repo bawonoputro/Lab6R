@@ -62,7 +62,14 @@ parallel_brute_force_knapsack <- function(x,W){
   list(value = as.numeric(local_best_value), elements = as.integer(local_best_idx))
 
   }
-  result_list <- parallel::mclapply(subset_range_list, evaluate_subset_chunk, mc.cores = num_cores)
+
+  if (use_parallel) {
+    # On *nix/mac this will use mclapply
+    result_list <- parallel::mclapply(chunks, evaluate_chunk, mc.cores = num_cores)
+  } else {
+    # fallback sequentially: safe for CI / Windows / non-interactive builds
+    result_list <- lapply(chunks, evaluate_chunk)
+  }
 
   for (result in result_list) {
     if (result$value > best_value) {
