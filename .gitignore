@@ -6,3 +6,6 @@ inst/doc
 doc/*
 !doc/*.html
 /Meta/
+profvis-*.html
+*.Rprof*
+mem.out
