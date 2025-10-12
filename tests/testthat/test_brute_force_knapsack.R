@@ -67,8 +67,7 @@ test_that("Parallel brute force execution time and result consistency", {
     expect_equal(normal_result$value, parallel_result$value)
     expect_setequal(normal_result$elements, parallel_result$elements)
 
-    # Optional: check if parallel is faster (can comment out)
-    # expect_true(parallel_time["elapsed"] < normal_time["elapsed"])
+
   } else {
     message("Skipping parallel brute force test in non-interactive session (CI/Windows)")
   }
