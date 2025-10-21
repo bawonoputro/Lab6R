@@ -43,7 +43,7 @@ knapsack_objects <- data.frame(
 # Solve the knapsack problem using brute force
 ```{r}
 start_time <- Sys.time()
-result <- brute_force_knapsack(x = knapsack_objects[1:15,], W = 3500)
+result <- brute_force_knapsack(x = knapsack_objects[1:20,], W = 3500)
 end_time <- Sys.time()
 execution_time_brute_force <- end_time - start_time
 
@@ -61,11 +61,11 @@ knapsack_objects <- data.frame(
 start_time <- Sys.time()
 result_brute_force <- brute_force_knapsack(knapsack_objects, W = 3500)
 end_time <- Sys.time()
-execution_time_brute_force <- end_time - start_time
+execution_time_brute_force_16 <- end_time - start_time
 
 
 result_brute_force
-cat("time solving n=16 with standard brute force is:", execution_time_brute_force, "seconds")
+cat("time solving n=16 with standard brute force is:", execution_time_brute_force_16, "seconds")
 ```
 
 ## Profiling and Optimizing the Code
@@ -89,7 +89,7 @@ knapsack_objects <- data.frame(
 )
 
   start_time_parallel <- Sys.time()
-  result_parallel <- parallel_brute_force_knapsack(x = knapsack_objects[1:15,], W = 3500)
+  result_parallel <- parallel_brute_force_knapsack(x = knapsack_objects[1:20,], W = 3500)
   end_time_parallel <- Sys.time()
   execution_time_parallel <- end_time_parallel - start_time_parallel
 
