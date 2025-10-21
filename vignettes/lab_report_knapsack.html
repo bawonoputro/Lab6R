@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Paripurna Bawonoputro" />
+
+
+<title>Lab Report: Knapsack Problem</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Lab Report: Knapsack Problem</h1>
+<h4 class="author">Paripurna Bawonoputro</h4>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This vignette shows three different approaches to solving the
+<strong>Knapsack Problem</strong>, a classic optimization problem. The
+objective is to select a subset of items that maximize the total value
+without exceeding the capacity of a knapsack. We also used
+parallelization of the brute force method.</p>
+<p>The four approaches we will cover are:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Brute Force Method</strong></li>
+<li><strong>Parallel Brute Force</strong></li>
+<li><strong>Dynamic Programming</strong></li>
+<li><strong>Greedy Algorithm</strong></li>
+</ol>
+<div id="sourcing-function-scripts" class="section level3">
+<h3>Sourcing Function Scripts</h3>
+<p>Before we begin, we need to load the functions from the existing
+scripts. Let’s source the function scripts that you have already
+created.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Source the function scripts</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;..//R//brute_force_knapsack.R&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;..//R//parallel_brute_force_knapsack.R&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;..//R//knapsack_dynamic.R&quot;</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;..//R//greedy_knapsack.R&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co"># Suppress warnings and set the RNG seed for reproducibility</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">RNGversion</span>(<span class="fu">min</span>(<span class="fu">as.character</span>(<span class="fu">getRversion</span>()),<span class="st">&quot;3.5.3&quot;</span>)))</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>, <span class="at">kind =</span> <span class="st">&quot;Mersenne-Twister&quot;</span>, <span class="at">normal.kind =</span> <span class="st">&quot;Inversion&quot;</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co"># Test Data</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>knapsack_objects <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>  <span class="at">w =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4000</span>, <span class="at">size =</span> n, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>  <span class="at">v =</span> <span class="fu">runif</span>(<span class="at">n =</span> n, <span class="dv">0</span>, <span class="dv">10000</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+</div>
+<div id="solve-the-knapsack-problem-using-brute-force" class="section level1">
+<h1>Solve the knapsack problem using brute force</h1>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>start_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">brute_force_knapsack</span>(<span class="at">x =</span> knapsack_objects[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>,], <span class="at">W =</span> <span class="dv">3500</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>end_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>execution_time_brute_force <span class="ot">&lt;-</span> end_time <span class="sc">-</span> start_time</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>result</span></code></pre></div>
+<pre><code>## $value
+## [1] 28827.67
+## 
+## $elements
+## [1]  3  8 14 18</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>execution_time_brute_force</span></code></pre></div>
+<pre><code>## Time difference of 1.227845 secs</code></pre>
+<div id="question-how-much-time-does-it-takes-to-run-the-algorithm-for-n-16-objects" class="section level4">
+<h4>Question: How much time does it takes to run the algorithm for n =
+16 objects?</h4>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">16</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>knapsack_objects <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">w =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4000</span>, <span class="at">size =</span> n, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">v =</span> <span class="fu">runif</span>(<span class="at">n =</span> n, <span class="dv">0</span>, <span class="dv">10000</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>)</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>start_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>result_brute_force <span class="ot">&lt;-</span> <span class="fu">brute_force_knapsack</span>(knapsack_objects, <span class="at">W =</span> <span class="dv">3500</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>end_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>execution_time_brute_force_16 <span class="ot">&lt;-</span> end_time <span class="sc">-</span> start_time</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>result_brute_force</span></code></pre></div>
+<pre><code>## $value
+## [1] 34657.86
+## 
+## $elements
+## [1]  3  5  7  8 12 15</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;time solving n=16 with standard brute force is:&quot;</span>, execution_time_brute_force_16, <span class="st">&quot;seconds&quot;</span>)</span></code></pre></div>
+<pre><code>## time solving n=16 with standard brute force is: 0.07079577 seconds</code></pre>
+</div>
+<div id="profiling-and-optimizing-the-code" class="section level2">
+<h2>Profiling and Optimizing the Code</h2>
+<p>In this section, we evaluate the performance gain achieved by
+optimizing the Brute Force knapsack algorithm. We profile the existing
+implementation to identify bottlenecks and apply optimizations such as
+vectorization, memoization, and parallelization.</p>
+<div id="profiling-the-brute-force-algorithm" class="section level3">
+<h3>Profiling the Brute Force Algorithm</h3>
+<p>We used the profvis tool to profile the brute force algorithm and
+identify which parts of the code were the most time-consuming. They are
+on “tools” folder on the package</p>
+<div id="question-what-performance-gain-could-you-get-by-trying-to-improving-your-code" class="section level4">
+<h4>Question: What performance gain could you get by trying to improving
+your code?</h4>
+<p>By profiling, we know what part of the code can be improved. By
+improving our code, we can have more efficient performances</p>
+</div>
+</div>
+</div>
+</div>
+<div id="solve-the-knapsack-problem-using-parallel-brute-force" class="section level1">
+<h1>Solve the knapsack problem using parallel brute force</h1>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>knapsack_objects <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="at">w =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4000</span>, <span class="at">size =</span> n, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="at">v =</span> <span class="fu">runif</span>(<span class="at">n =</span> n, <span class="dv">0</span>, <span class="dv">10000</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>)</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>  start_time_parallel <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>  result_parallel <span class="ot">&lt;-</span> <span class="fu">parallel_brute_force_knapsack</span>(<span class="at">x =</span> knapsack_objects[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>,], <span class="at">W =</span> <span class="dv">3500</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>  end_time_parallel <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>  execution_time_parallel <span class="ot">&lt;-</span> end_time_parallel <span class="sc">-</span> start_time_parallel</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>  result_parallel</span></code></pre></div>
+<pre><code>## $value
+## [1] 24473.45
+## 
+## $elements
+## [1]  6 12 13 20</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>  execution_time_parallel</span></code></pre></div>
+<pre><code>## Time difference of 0.898994 secs</code></pre>
+<div id="question-what-performance-gain-could-you-get-by-parallelizing-brute-force-search" class="section level4">
+<h4>Question: What performance gain could you get by parallelizing brute
+force search?</h4>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Solving n=2000 with standard bruteforce takes: &quot;</span>, execution_time_brute_force, <span class="st">&quot;seconds </span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Solving n=2000 with standard bruteforce takes:  1.227845 seconds</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Solving n=2000 with parallel bruteforce takes: &quot;</span>, execution_time_parallel, <span class="st">&quot;seconds </span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Solving n=2000 with parallel bruteforce takes:  0.898994 seconds</code></pre>
+<p>From the time results showed above using standard bruteforce and the
+parallelized one, we gained a significant time performance, especially
+in big computation.</p>
+</div>
+</div>
+<div id="solve-the-knapsack-problem-using-dynamic-programming" class="section level1">
+<h1>Solve the knapsack problem using dynamic programming</h1>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>result_dynamic <span class="ot">&lt;-</span> <span class="fu">knapsack_dynamic</span>(<span class="at">x =</span> knapsack_objects[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,], <span class="at">W =</span> <span class="dv">3500</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>result_dynamic</span></code></pre></div>
+<pre><code>## $value
+## [1] 20865.5
+## 
+## $elements
+## [1]  6  7 10</code></pre>
+<div id="question-how-much-time-does-it-takes-to-run-the-algorithm-for-n-500-objects" class="section level4">
+<h4>Question: How much time does it takes to run the algorithm for n =
+500 objects?</h4>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co"># Test data for n = 500</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>knapsack_objects <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>  <span class="at">w =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4000</span>, <span class="at">size =</span> n, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>  <span class="at">v =</span> <span class="fu">runif</span>(<span class="at">n =</span> n, <span class="dv">0</span>, <span class="dv">10000</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>)</span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a><span class="co"># Run the dynamic programming knapsack algorithm for n = 500</span></span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a>start_time_dynamic <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a>result_dynamic <span class="ot">&lt;-</span> <span class="fu">knapsack_dynamic</span>(knapsack_objects, <span class="at">W =</span> <span class="dv">3500</span>)</span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a>end_time_dynamic <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a>execution_time_dynamic <span class="ot">&lt;-</span> end_time_dynamic <span class="sc">-</span> start_time_dynamic</span>
+<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a><span class="co"># Results</span></span>
+<span id="cb20-15"><a href="#cb20-15" tabindex="-1"></a>result_dynamic</span></code></pre></div>
+<pre><code>## $value
+## [1] 190104.1
+## 
+## $elements
+##  [1]   9  12  13  33  52  69  76  77  93 111 134 154 187 201 213 253 269 317 328 330 331 352 375
+## [24] 408 417 445 479</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;time solving n=500 with dynamic programming is:&quot;</span>, execution_time_dynamic, <span class="st">&quot;seconds&quot;</span>)</span></code></pre></div>
+<pre><code>## time solving n=500 with dynamic programming is: 0.206003 seconds</code></pre>
+</div>
+</div>
+<div id="solve-the-knapsack-problem-using-the-greedy-algorithm" class="section level1">
+<h1>Solve the knapsack problem using the greedy algorithm</h1>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>result_greedy <span class="ot">&lt;-</span> <span class="fu">greedy_knapsack</span>(<span class="at">x =</span> knapsack_objects[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,], <span class="at">W =</span> <span class="dv">3500</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>result_greedy</span></code></pre></div>
+<pre><code>## $value
+## [1] 20501.05
+## 
+## $elements
+## [1] 9 1 6 7</code></pre>
+<div id="question-how-much-time-does-it-takes-to-run-the-algorithm-for-n-1000000-objects" class="section level4">
+<h4>Question: How much time does it takes to run the algorithm for n =
+1000000 objects?</h4>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co"># Test data for n = 1,000,000</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000000</span></span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>knapsack_objects <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a>  <span class="at">w =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4000</span>, <span class="at">size =</span> n, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a>  <span class="at">v =</span> <span class="fu">runif</span>(<span class="at">n =</span> n, <span class="dv">0</span>, <span class="dv">10000</span>)</span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a>)</span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a><span class="co"># Run the greedy knapsack algorithm for n = 1,000,000</span></span>
+<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a>start_time_greedy <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a>result_greedy <span class="ot">&lt;-</span> <span class="fu">greedy_knapsack</span>(knapsack_objects, <span class="at">W =</span> <span class="dv">3500</span>)</span>
+<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a>end_time_greedy <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a>execution_time_greedy <span class="ot">&lt;-</span> end_time_greedy <span class="sc">-</span> start_time_greedy</span>
+<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a></span>
+<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a><span class="co"># Results</span></span>
+<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a>result_greedy</span></code></pre></div>
+<pre><code>## $value
+## [1] 6996197
+## 
+## $elements
+##    [1] 377282 631036 722346 134155  68925 962518 674428 486563 487702  79144 558900 593475
+##   [13] 291194 476942 209749 520733 884676 403579 147240 385125 539690 574972 295086 377888
+##   [25] 913357 288621 337499 103538  38787 515238  96793 696723 238321 406483 871795 716604
+##   [37] 637426 620875 225373 719117 327919 686982 881985 784113 469420 235018 361512 142840
+##   [49] 674294 994864 870916 100306  38116 620001 278639 613143 717834 224032 412034 697357
+##   [61] 700610 395045 904878 313042 721540 571385 782022 444441 798107 143798 342585 298996
+##   [73] 957304 723825 344912 874399 801672  31590 815764 897308   2814  46457 301784 425842
+##   [85] 563013 296382 340648 809356 761894 680011 148890 394376 287284 414955 782874 499953
+##   [97] 520539 151057 628498 776358 921002 269344 370505  11730 605403 164616 763231 614240
+##  [109] 185482 595425 713173 347153 804469 895572 746021 896193 415987 877064 352147 886008
+##  [121] 698747 510979 203834 614552 165048 282295 576418  73202 427797 574988 107470 681634
+##  [133] 719158  57163 918547 977812 372608 513438 117026 114651 301376 101511 984823 710581
+##  [145] 990938 979291 252871 499419 598143  31201  97135 991845  60788 640748    788  89997
+##  [157] 189895 120778 162760 523093 824189 755587 804855 866654 928121 225559 869411 738576
+##  [169] 451776 361282 943805 137429 462982 789068 550356 102413 134700 519532 107598 204930
+##  [181]  71664 522223 398426 191651 568792 502283  60578 703682 337259 741528 311867 322483
+##  [193] 847778 494895 384477 603810 965249 354635 755043 737054  51357 348274 403073  50965
+##  [205] 110514 572122 160670 629070  59240 514392 599521 979498 121126 421422 539873  72724
+##  [217] 998991 120565 557613 157376 439741 699985 376771 433534 940183 795017  56257 695531
+##  [229] 896024 592354 763583 901959 796612 284158 817183 329171  87348 408381 790264 679969
+##  [241]  34189 394800 630892 901723 383207 851338 688140  58091  70960 103553 380154 628514
+##  [253] 303282 514479 205404 264579 734231 689935 464801 145499 812756  91560 593973 654443
+##  [265] 933518 340929 500346 663849 328854 178058 102408  15735 332282 400526 955566 122887
+##  [277] 264321 356629 891152 307956 529845 310390 992253 257435 344829 530869 804688 490281
+##  [289] 356401 509125 826969 619317 503319 468971 935748 235610 673035 610754 314832 902749
+##  [301] 310977 802899 932272 808106 816254 684519 224005 328795 584443  22227 981014 325615
+##  [313] 381666 644189 820229 680968 359535  62200 758344 280034 763029 350895 695174  36594
+##  [325] 602972 489129 785926 920951  40636 546953 471488 752821 636980 261281  40719  94973
+##  [337]  20600  99589 244927 329241 777558  54331 998378 372692 311828 596045 220361 700770
+##  [349] 508819 808499 537783  24415 194630 392372 489899 607342 191928 558145 763905 358048
+##  [361] 762703 169365  75882 465405 132708  36368 909901 565918  46420 662933 835144 758041
+##  [373] 278521 236941 183334 653669  26363 263432 121602 163279 924567 514782  56151 927906
+##  [385] 947445 780442  64416 163378 702438 347282 654086  19387 630809 654514 935097  29554
+##  [397] 764514 350783 734615 971767  19336 786822  81353 453326 570483 422404 877179 704898
+##  [409] 207052 252104 915477 649391 260512 301521 373207 203374 355459 624697 184888 793430
+##  [421] 974721 600983 655483 783806 878658 205171 999149  35707 755022 334351 432660 745760
+##  [433] 567368 287413  24079  11080 533296 948892 674473 793885 721529 931817 328552 769253
+##  [445] 857676 999569 247678 363523 708590 215996 734620 541636 841302   6202 103838 188514
+##  [457] 779130  34665 209189 230307 990291 831270 767399 596601 647878 846046 190882 140633
+##  [469]  38497 318607 645811  61047 943663 833111 344791 678590 590806 553013 716229 995924
+##  [481] 132421 513818  88434 156096 241561 110896 985354 484492 528922  61111 404610 511598
+##  [493] 868026 429660 646849   4863 640865 581374  46771 274384 660073  51727 321814 293625
+##  [505] 863805  93028 484188 789328  11417 374195 326214 943127 294573 921714 401205 819406
+##  [517] 200702 658485 659664 628414 854897 191147 984530   5391 124230 328477 624331 195553
+##  [529]  67297 283442 372896 961092 172055 872265  21616 566378 138258 802321 295853 911266
+##  [541] 180660 353641 467170  59111   3621 418732 187967 566699 192379 202929 939590  59511
+##  [553] 467901 829978  77000 952558 236365 143862 972207 902800 341998 365731 856547 425169
+##  [565] 184150 845807 274984 437740 962212 877518 967868 580719 852349 430966 246657 438897
+##  [577]   6729  32776 809499  51243 949957 804300 319612 537775 308350 141017 350682 987023
+##  [589] 168405 103547 600086  60081 935489 526616 702909 814307 869074 811918 579294  64840
+##  [601] 629353 153291 752903 716852 318381 272715 343016 403816 745952 458320 507033 311167
+##  [613] 876977 173500 688362  61708 269056 855190  32547 866537 445000 246755 281829 476631
+##  [625] 364809 783694  26473 333789 462054 920920 458822 501025 609882 908694 319189 345517
+##  [637] 194422 329631 434753 608665 212406 485692 118494 276727 715810 708780 726508  22493
+##  [649]  44567 529084  68269 393015 977879 739324 226916 122606 403407 719356 915825 718951
+##  [661] 630497 311100 935303 819292 794852 822234 444284 368227 131000 392265 292602 166432
+##  [673] 747161 793669 532927 641691 229087 158717 827341 946907 174303 849427 240590 329767
+##  [685] 296349 999899 410442 385596 300086  58506 953743 860398 229278 107965  56295 931818
+##  [697] 427802 616531 888039 736519 212825 978021 180502 186716 574385  18574 275686 684752
+##  [709] 275390 701824 604797 673211 643802 540165 479575 977797 487063 115742 362588 492682
+##  [721] 775180 507094 611220 313685 268432 592608 831706  35764 203189  72391 436829 497610
+##  [733] 162341 230611 336412 689052 615582 383106 378781 297631  38002 997725 667928 629954
+##  [745] 444301 264287 370620 902910 994186 345612 277322 375921 110646 238358 938986  69996
+##  [757] 256055 463587 584809 646035 476408 202170 393784 973331 502329 698693  33230  25959
+##  [769] 288864 253786 626506 948797 544343 811436 727615 741460 510747 688428 402580  28551
+##  [781] 135307 370454 743877 618090 567544 606341 479696 514292 856109 475779  94923 577648
+##  [793] 819037 461121 121992 875453 572717 952082 542412 474027 521226 778858 167564 468026
+##  [805]  92916  31187 780298 213267 236556  98598 417193  37910 840719 267235 314238 523822
+##  [817] 837777 870790 331679  78849  40584 699959 957002 980513 357961 118406 248060 238170
+##  [829] 155797 301695 790327  33555 157066 449323  60718 159325 444524 149268 759061 530449
+##  [841] 662713 770493 827030 664437 693704 722232 233730 972261 744385 663860 257161 333725
+##  [853] 160052  26909 482839  37625 672100 189062 222668 805704 355366 530736 632125 362125
+##  [865] 536385 663805 961726  57796 218694 233577 965849 890478 861508 481709 884446 585037
+##  [877]  53722 611402 759697 371749 323209 761433 972775 708137 868585  46676 710398 862268
+##  [889] 499013 599450 818440 714957 956743 661215  11949 297836 779394 399973 689635 831672
+##  [901] 726742  48942 443355 106434 294014 960118 225291 403622 957824 306720 283911 204749
+##  [913] 464082 863825 607198  84301 399891 909344 835063 391031 561355 781605 650201 656931
+##  [925] 201044 866409 915638 750234  28178 958050 975242 768769 325480   1596 281933 472899
+##  [937] 199432  47517 424689 825302  69952 846755 887580 926045 621167 871633 575989 743479
+##  [949] 298825 381956 655635 392187 492803  35101 826665 587734 548304 728717 308795 362746
+##  [961] 129889 456535 185444 428174 690244 341005 885593 226432 448869 191642 165272 896525
+##  [973] 233831 591895 213527 465326 869093 295544  12784 168679 171926 242169 665219 144608
+##  [985] 411391 647065   6828 994818 743806 706356 380203 453363 199922 195479 617812 385028
+##  [997] 298080 173048 459585  58628
+##  [ reached &#39;max&#39; / getOption(&quot;max.print&quot;) -- omitted 23 entries ]</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;time solving n=1000000 with greedy algorithm is:&quot;</span>, execution_time_greedy, <span class="st">&quot;seconds&quot;</span>)</span></code></pre></div>
+<pre><code>## time solving n=1000000 with greedy algorithm is: 0.06263113 seconds</code></pre>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
