@@ -1,3 +1,6 @@
+#' @name greedy_knapsack
+#' @title Greedy Knapsack Function
+#' @description
 #' Greedy Knapsack Solver
 #'
 #' Solves the Knapsack problem using a greedy heuristic. The function selects items

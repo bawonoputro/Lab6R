@@ -2,7 +2,7 @@
 % Please edit documentation in R/greedy_knapsack.R
 \name{greedy_knapsack}
 \alias{greedy_knapsack}
-\title{Greedy Knapsack Solver}
+\title{Greedy Knapsack Function}
 \usage{
 greedy_knapsack(x, W)
 }
@@ -20,6 +20,8 @@ A list containing:
   - `elements`: A vector of the selected items that give the maximum value.
 }
 \description{
+Greedy Knapsack Solver
+
 Solves the Knapsack problem using a greedy heuristic. The function selects items
 based on their value-to-weight ratio (vi/wi) and adds them to the knapsack as long as they fit.
 This method does not guarantee the optimal solution but provides a quick approximation.

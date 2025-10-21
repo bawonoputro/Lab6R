@@ -1,3 +1,6 @@
+#' @name parallel_brute_force_knapsack
+#' @title Parallel Brute Force Function
+#' @description
 #' Parallel Brute-force Knapsack
 #'
 #' Solves the Knapsack problem using a parallel brute-force approach by evaluating all
@@ -12,7 +15,6 @@
 #'   - `value`: Maximum total value achievable.
 #'   - `elements`: A vector of the selected items that give the maximum value.
 #' @export
-#'
 parallel_brute_force_knapsack <- function(x, W){
   stopifnot(is.data.frame(x),
             all(c("v","w") %in% names(x)),

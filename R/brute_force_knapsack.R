@@ -1,5 +1,6 @@
-#' Brute-force Knapsack
-#'
+#' @name brute_force_knapsack
+#' @title Brute Force Function
+#' @description
 #' Solves the Knapsack problem using a brute-force approach by evaluating all possible combinations of items.
 #'
 #' @param x A data frame with two columns:
@@ -11,7 +12,6 @@
 #'   - `value`: Maximum total value achievable.
 #'   - `elements`: A vector of the selected items that give the maximum value.
 #' @export
-
 library(parallel)
 brute_force_knapsack <- function(x,W){
   stopifnot(is.data.frame(x),

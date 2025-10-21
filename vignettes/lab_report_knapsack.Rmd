@@ -43,34 +43,112 @@ knapsack_objects <- data.frame(
 # Solve the knapsack problem using brute force
 ```{r}
 start_time <- Sys.time()
-result <- brute_force_knapsack(x = knapsack_objects[1:20,], W = 3500)
+result <- brute_force_knapsack(x = knapsack_objects[1:15,], W = 3500)
 end_time <- Sys.time()
 execution_time_brute_force <- end_time - start_time
 
 result
 execution_time_brute_force
 ```
+#### Question: How much time does it takes to run the algorithm for n = 16 objects?
+```{r}
+n <- 16
+knapsack_objects <- data.frame(
+  w = sample(1:4000, size = n, replace = TRUE),
+  v = runif(n = n, 0, 10000)
+)
+
+start_time <- Sys.time()
+result_brute_force <- brute_force_knapsack(knapsack_objects, W = 3500)
+end_time <- Sys.time()
+execution_time_brute_force <- end_time - start_time
+
+
+result_brute_force
+cat("time solving n=16 with standard brute force is:", execution_time_brute_force, "seconds")
+```
+
+## Profiling and Optimizing the Code
+
+In this section, we evaluate the performance gain achieved by optimizing the Brute Force knapsack algorithm. We profile the existing implementation to identify bottlenecks and apply optimizations such as vectorization, memoization, and parallelization.
+
+### Profiling the Brute Force Algorithm
+
+We used the profvis tool to profile the brute force algorithm and identify which parts of the code were the most time-consuming. They are on "tools" folder on the package
+
+#### Question: What performance gain could you get by trying to improving your code?
+By profiling, we know what part of the code can be improved.
+By improving our code, we can have more efficient performances
+
 # Solve the knapsack problem using parallel brute force
 ```{r}
-if(interactive()) {
+n <- 2000
+knapsack_objects <- data.frame(
+  w = sample(1:4000, size = n, replace = TRUE),
+  v = runif(n = n, 0, 10000)
+)
+
   start_time_parallel <- Sys.time()
-  result_parallel <- parallel_brute_force_knapsack(x = knapsack_objects[1:20,], W = 3500)
+  result_parallel <- parallel_brute_force_knapsack(x = knapsack_objects[1:15,], W = 3500)
   end_time_parallel <- Sys.time()
   execution_time_parallel <- end_time_parallel - start_time_parallel
 
   result_parallel
   execution_time_parallel
-} else {
-  message("Parallel brute force skipped: non-interactive session.")
-}
 ```
+#### Question: What performance gain could you get by parallelizing brute force search?
+```{r}
+cat("Solving n=2000 with standard bruteforce takes: ", execution_time_brute_force, "seconds \n")
+cat("Solving n=2000 with parallel bruteforce takes: ", execution_time_parallel, "seconds \n")
+```
+From the time results showed above using standard bruteforce and the parallelized one, we gained a significant time performance, especially in big computation.
+
+
 # Solve the knapsack problem using dynamic programming
 ```{r}
 result_dynamic <- knapsack_dynamic(x = knapsack_objects[1:10,], W = 3500)
 result_dynamic
 ```
+#### Question: How much time does it takes to run the algorithm for n = 500 objects?
+```{r}
+# Test data for n = 500
+n <- 500
+knapsack_objects <- data.frame(
+  w = sample(1:4000, size = n, replace = TRUE),
+  v = runif(n = n, 0, 10000)
+)
+
+# Run the dynamic programming knapsack algorithm for n = 500
+start_time_dynamic <- Sys.time()
+result_dynamic <- knapsack_dynamic(knapsack_objects, W = 3500)
+end_time_dynamic <- Sys.time()
+execution_time_dynamic <- end_time_dynamic - start_time_dynamic
+
+# Results
+result_dynamic
+cat("time solving n=500 with dynamic programming is:", execution_time_dynamic, "seconds")
+```
 # Solve the knapsack problem using the greedy algorithm
 ```{r}
 result_greedy <- greedy_knapsack(x = knapsack_objects[1:10,], W = 3500)
 result_greedy
+```
+#### Question: How much time does it takes to run the algorithm for n = 1000000 objects?
+```{r}
+# Test data for n = 1,000,000
+n <- 1000000
+knapsack_objects <- data.frame(
+  w = sample(1:4000, size = n, replace = TRUE),
+  v = runif(n = n, 0, 10000)
+)
+
+# Run the greedy knapsack algorithm for n = 1,000,000
+start_time_greedy <- Sys.time()
+result_greedy <- greedy_knapsack(knapsack_objects, W = 3500)
+end_time_greedy <- Sys.time()
+execution_time_greedy <- end_time_greedy - start_time_greedy
+
+# Results
+result_greedy
+cat("time solving n=1000000 with greedy algorithm is:", execution_time_greedy, "seconds")
 ```

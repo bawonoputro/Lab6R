@@ -2,7 +2,7 @@
 % Please edit documentation in R/knapsack_dynamic.R
 \name{knapsack_dynamic}
 \alias{knapsack_dynamic}
-\title{Dynamic Programming Knapsack}
+\title{Dynamic Programming Function}
 \usage{
 knapsack_dynamic(x, W)
 }
@@ -20,11 +20,12 @@ A list containing:
   - `elements`: A vector of the selected items that give the maximum value.
 }
 \description{
+Dynamic Programming Knapsack
+
 Solves the Knapsack problem using dynamic programming. The function
 calculates the maximum value that can be obtained by selecting a subset of items
 such that their total weight does not exceed the given knapsack capacity.
-}
-\details{
+
 This approach uses a **bottom-up** DP algorithm and iterates over the items and
 capacities, building the solution table row by row. The function then uses **backtracking**
 to recover the list of items selected to achieve the maximum value.

@@ -1,3 +1,6 @@
+#' @name knapsack_dynamic
+#' @title Dynamic Programming Function
+#' @description
 #' Dynamic Programming Knapsack
 #'
 #' Solves the Knapsack problem using dynamic programming. The function
